@@ -1,10 +1,4 @@
-import webbrowser
-import os
-import re
 
-
-# Styles and scripting for the page
-main_page_head = '''
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,11 +77,7 @@ main_page_head = '''
         });
     </script>
 </head>
-'''
 
-
-# The main page layout and title bar
-main_page_content = '''
   <body>
     <!-- Trailer Video Modal -->
     <div class="modal" id="trailer">
@@ -113,64 +103,79 @@ main_page_content = '''
       </div>
     </div>
     <div class="container">
-      {movie_tiles}
+      
+<div class="col-md-6 col-lg-4 movie-tile text-center" >
+    
+    <div data-trailer-youtube-id="KYz2wyBy3kc" data-toggle="modal" data-target="#trailer">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/d/dc/Movie_poster_toy_story.jpg" width="220" height="342">
+        <h2>toy story</h2>
+        <h5>Woody eh um boneco cowboy de bom coracao que pertence a um jovem chamado Andy.</h5>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" target="blank" href="https://www.imdb.com/title/tt0114709/" role="button" sty>Imdb page</a>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" >
+    
+    <div data-trailer-youtube-id="6ziBFh3V1aM" data-toggle="modal" data-target="#trailer">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/b/b0/Avatar-Teaser-Poster.jpg/250px-Avatar-Teaser-Poster.jpg" width="220" height="342">
+        <h2>avatar</h2>
+        <h5>No exuberante mundo alienigena de Pandora vivem os Na'vi, seres que parecem ser primitivos, mas sao altamente evoluidos.</h5>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" target="blank" href="https://www.imdb.com/title/tt0499549/" role="button" sty>Imdb page</a>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" >
+    
+    <div data-trailer-youtube-id="KBiOF3y1W0Y" data-toggle="modal" data-target="#trailer">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/e/e6/Drive-P%C3%B4ster.jpg/250px-Drive-P%C3%B4ster.jpg" width="220" height="342">
+        <h2>Drive</h2>
+        <h5>Um habilidoso motorista, que eh duble em cenas de perseguicao em filmes de Hollywood, tambem usa seu talento no volante para ser piloto de fuga em assaltos</h5>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" target="blank" href="https://www.imdb.com/title/tt0780504/" role="button" sty>Imdb page</a>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" >
+    
+    <div data-trailer-youtube-id="HiixbtN-O24" data-toggle="modal" data-target="#trailer">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/7/74/A_origem_poster_portugues.jpg/250px-A_origem_poster_portugues.jpg" width="220" height="342">
+        <h2>A Origem</h2>
+        <h5>Don Cobb eh um ladrao que invade os sonhos das pessoas e rouba segredos do subconsciente.</h5>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" target="blank" href="https://www.imdb.com/title/tt1375666/" role="button" sty>Imdb page</a>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" >
+    
+    <div data-trailer-youtube-id="7d_jQycdQGo" data-toggle="modal" data-target="#trailer">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/c/cd/Whiplash_em_busca_da_perfeicao.png/240px-Whiplash_em_busca_da_perfeicao.png" width="220" height="342">
+        <h2>Whiplash</h2>
+        <h5>O jovem musico Andrew Neiman batalha para ser o melhor baterista de jazz de sua geracao.</h5>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" target="blank" href="https://www.imdb.com/title/tt2582802/" role="button" sty>Imdb page</a>
+    </div>
+</div>
+
+<div class="col-md-6 col-lg-4 movie-tile text-center" >
+    
+    <div data-trailer-youtube-id="s7EdQ4FqbhY" data-toggle="modal" data-target="#trailer">
+        <img src="https://upload.wikimedia.org/wikipedia/pt/thumb/8/82/Pulp_Fiction_cover.jpg/240px-Pulp_Fiction_cover.jpg" width="220" height="342">
+        <h2>Pulp Fiction</h2>
+        <h5>Os caminhos de varios criminosos se cruzam nestas tres historias de Quentin Tarantino.</h5>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" target="blank" href="https://www.imdb.com/title/tt0110912/" role="button" sty>Imdb page</a>
+    </div>
+</div>
+
     </div>
   </body>
 </html>
-'''
-
-
-# A single movie entry html template
-movie_tile_content = '''
-<div class="col-md-6 col-lg-4 movie-tile text-center" >
-    
-    <div data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
-        <img src="{poster_image_url}" width="220" height="342">
-        <h2>{movie_title}</h2>
-        <h5>{movie_storyline}</h5>
-    </div>
-    <div class="text-center">
-        <a class="btn btn-primary" target="blank" href="{movie_imdb_url}" role="button" sty>Imdb page</a>
-    </div>
-</div>
-'''
-
-
-def create_movie_tiles_content(movies):
-    # The HTML content for this section of the page
-    content = ''
-    for movie in movies:
-        # Extract the youtube ID from the url
-        youtube_id_match = re.search(
-            r'(?<=v=)[^&#]+', movie.trailer_youtube_url)
-        youtube_id_match = youtube_id_match or re.search(
-            r'(?<=be/)[^&#]+', movie.trailer_youtube_url)
-        trailer_youtube_id = (youtube_id_match.group(0) if youtube_id_match
-                              else None)
-
-        # Append the tile for the movie with its content filled in
-        content += movie_tile_content.format(
-            movie_title=movie.title,
-            movie_storyline=movie.storyline,
-            poster_image_url=movie.poster_image_url,
-            trailer_youtube_id=trailer_youtube_id,
-            movie_imdb_url=movie.imdb_url
-        )
-    return content
-
-
-def open_movies_page(movies):
-    # Create or overwrite the output file
-    output_file = open('fresh_tomatoes.html', 'w')
-
-    # Replace the movie tiles placeholder generated content
-    rendered_content = main_page_content.format(
-        movie_tiles=create_movie_tiles_content(movies))
-
-    # Output the file
-    output_file.write(main_page_head + rendered_content)
-    output_file.close()
-
-    # open the output file in the browser (in a new tab, if possible)
-    url = os.path.abspath(output_file.name)
-    webbrowser.open('file://' + url, new=2)
